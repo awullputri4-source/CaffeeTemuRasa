@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Temu Rasa — Cafe</title>
+
+  <!-- ============================================================
+       FONT — GOOGLE FONTS
+       Ganti nama font di bawah untuk mengubah tampilan teks.
+       Contoh font lain: Playfair+Display, Oswald, Montserrat, Raleway
+       Cari font di: https://fonts.google.com
+  ============================================================ -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ============================================================
+       CUSTOM CURSOR (div transparan mengikuti mouse)
+       Hapus dua div ini dan properti cursor:none di body
+       jika ingin menggunakan kursor bawaan browser
+  ============================================================ -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ============================================================
+       NOTIFIKASI TOAST (muncul saat klik tombol tambah)
+  ============================================================ -->
+  <div id="toast">☕ Ditambahkan ke keranjang!</div>
+
+  <!-- ============================================================
+       TOMBOL SCROLL KE ATAS
+  ============================================================ -->
+  <button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+  <!-- ============================================================
+       NAVBAR / NAVIGASI
+       Ubah nama cafe, link menu, dan teks tombol CTA di sini
+  ============================================================ -->
+  <nav id="navbar">
+    <!-- LOGO — Ubah teks "Kopi" dan "Rasa" sesuai nama cafe -->
+    <a href="#hero" class="logo">Temu<span>Rasa</span></a>
+
+    <!-- MENU NAVIGASI — Tambah/hapus <li> untuk menambah/hapus menu -->
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#tentang">Tentang</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#suasana">Suasana</a></li>
+      <li><a href="#testimoni">Ulasan</a></li>
+      <li><a href="#lokasi">Lokasi</a></li>
+      <!-- Tombol CTA paling kanan navbar -->
+      <li><a href="#menu" class="nav-cta">Pesan Sekarang</a></li>
+    </ul>
+
+    <!-- Tombol hamburger untuk mobile -->
+    <button class="hamburger" id="hamburger" aria-label="Buka menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ============================================================
+       SECTION HERO — HALAMAN UTAMA
+       Ubah label, judul, deskripsi, teks tombol, dan angka statistik
+  ============================================================ -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-ring"></div>
+    <div class="hero-circle"><!-- Lingkaran dekoratif kanan --></div>
+
+    <div class="hero-content" style="padding: var(--padding-container);">
+      <!-- Label kecil di atas judul -->
+      <!-- Ubah teks label ini -->
+
+      <!-- Judul utama — <em> = teks miring berwarna aksen -->
+      <h1 class="hero-judul">
+        Secangkir<br>
+        <em>Cerita</em><br>
+        Untukmu
+        <!-- Ubah teks di atas sesuai slogan cafe kamu -->
+      </h1>
+
+      <!-- Deskripsi singkat -->
+      <p class="hero-desc">
+        Tempat di mana setiap tegukan membawa kehangatan,
+        setiap sudut menyimpan kenangan, dan setiap hari
+        adalah awal yang sempurna.
+        <!-- Ubah teks deskripsi ini -->
+      </p>
+
+      <!-- Dua tombol aksi -->
+      <div class="hero-btns">
+        <a href="#menu" class="btn-primer">☕ Jelajahi Menu</a><!-- Ubah teks tombol -->
+        <a href="#tentang" class="btn-sekunder">Tentang Kami</a><!-- Ubah teks tombol -->
+      </div>
+    </div>
+
+    <!-- Statistik angka pojok kanan bawah -->
+    <div class="hero-stats">
+      <div class="stat-item">
+        <!-- Ubah angka dan label statistik sesuai data nyata cafe kamu -->
+        <div class="stat-angka" id="stat1">0</div>
+        <div class="stat-label">Menu Pilihan</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-angka" id="stat2">0</div>
+        <div class="stat-label">Pelanggan Setia</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-angka" id="stat3">0</div>
+        <div class="stat-label">Tahun Berdiri</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION TENTANG KAMI
+       Ubah foto (emoji), judul, paragraf, dan daftar keunggulan
+  ============================================================ -->
+  <section id="tentang">
+    <div class="container">
+      <div class="tentang-grid">
+
+        <!-- Kolom kiri: Visual / Foto -->
+        <div class="tentang-visual reveal">
+          <div class="tentang-foto-utama">
+            <!-- Ganti emoji dengan: background-image: url('foto-cafe.jpg') -->
+            ☕
+          </div>
+          <!-- Badge melayang di pojok kanan bawah foto -->
+          <div class="tentang-badge">
+            <div class="tentang-badge-angka">4.9</div><!-- Ubah angka rating -->
+            <div class="tentang-badge-teks">Rating</div>
+            <div style="margin-top:0.3rem; font-size:1rem; color: rgba(0,0,0,0.5);">★★★★★</div>
+          </div>
+        </div>
+
+        <!-- Kolom kanan: Teks -->
+        <div class="reveal">
+          <div class="section-label">Tentang Kami</div>
+          <h2 class="section-judul">
+            Ruang untuk <em>Bersantai</em>
+            dan Berkarya
+            <!-- Ubah judul tentang kami -->
+          </h2>
+          <p class="section-teks">
+            TemuRasa lahir dari cinta mendalam terhadap kopi dan kebersamaan.
+            Kami percaya bahwa secangkir kopi yang tepat dapat mengubah
+            hari yang biasa menjadi luar biasa.
+            <!-- Ubah paragraf pertama -->
+          </p>
+          <p class="section-teks">
+            Dengan biji kopi pilihan dari Aceh, Toraja, dan Flores,
+            setiap cangkir kami adalah perjalanan rasa yang tak terlupakan.
+            <!-- Ubah paragraf kedua -->
+          </p>
+
+          <!-- Daftar keunggulan — tambah/hapus <li> sesuai kebutuhan -->
+          <ul class="fitur-list">
+            <li>Biji kopi single origin premium dari petani lokal</li>
+            <li>Barista tersertifikasi internasional</li>
+            <li>Suasana nyaman dengan WiFi gratis & stop kontak tersedia</li>
+            <li>Menu makanan buatan tangan setiap hari</li>
+            <li>Tersedia layanan catering & private event</li>
+          </ul>
+
+          <a href="#menu" class="btn-primer" style="display:inline-flex; margin-top:1rem;">
+            Lihat Menu Kami ↗
+            <!-- Ubah teks tombol -->
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION MENU
+       Ubah kategori filter, nama menu, harga, deskripsi, dan emoji
+       Untuk menambah kartu: duplikat blok <div class="menu-kartu"> dan ubah isinya
+  ============================================================ -->
+  <section id="menu">
+    <div class="container">
+
+      <!-- Judul Section Menu -->
+      <div class="menu-header reveal">
+        <div class="section-label" style="justify-content:center;">Menu Kami</div>
+        <h2 class="section-judul" style="text-align:center;">
+          Pilihan <em>Terbaik</em> untuk<br>Setiap Momen
+          <!-- Ubah judul menu -->
+        </h2>
+        <div class="divider"></div>
+      </div>
+
+      <!-- Tab Filter Kategori — tambah/hapus <button> sesuai kategori menu -->
+      <div class="menu-filter">
+        <button class="filter-btn aktif" data-kategori="semua">Semua</button>
+        <button class="filter-btn" data-kategori="kopi">☕ Kopi</button>
+        <button class="filter-btn" data-kategori="non-kopi">🍵 Non-Kopi</button>
+        <button class="filter-btn" data-kategori="dessert">🍰 Dessert</button>
+        <button class="filter-btn" data-kategori="spesial">✦ Spesial</button>
+      </div>
+
+      <!-- Grid Kartu Menu -->
+      <div class="menu-grid">
+
+        <!-- ======= KARTU MENU 1 =======
+             Salin blok ini untuk menambah menu baru
+             Ubah: emoji di .kartu-gambar, nama, deskripsi, harga, kategori (data-kategori) -->
+        <div class="menu-kartu" data-kategori="kopi">
+          <div class="kartu-gambar">☕</div>
+          <span class="kartu-badge">Favorit</span><!-- Hapus baris ini jika tidak ada badge -->
+          <div class="kartu-konten">
+            <div class="kartu-nama">Signature Latte</div><!-- Ubah nama menu -->
+            <div class="kartu-desc">Espresso double shot dengan susu oat creamy dan sentuhan karamel artisan</div><!-- Ubah deskripsi -->
+            <div class="kartu-footer">
+              <div class="kartu-harga">Rp 38.000</div><!-- Ubah harga -->
+              <button class="kartu-tambah" onclick="tambahKeranjang(this)" aria-label="Tambah">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======= KARTU MENU 2 ======= -->
+        <div class="menu-kartu" data-kategori="kopi">
+          <div class="kartu-gambar">🥛</div>
+          <span class="kartu-badge">Baru</span>
+          <div class="kartu-konten">
+            <div class="kartu-nama">Cold Brew Pandan</div>
+            <div class="kartu-desc">Cold brew 18 jam dengan ekstrak pandan segar — perpaduan rasa yang unik</div>
+            <div class="kartu-footer">
+              <div class="kartu-harga">Rp 42.000</div>
+              <button class="kartu-tambah" onclick="tambahKeranjang(this)" aria-label="Tambah">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======= KARTU MENU 3 ======= -->
+        <div class="menu-kartu" data-kategori="non-kopi">
+          <div class="kartu-gambar">🍵</div>
+          <div class="kartu-konten">
+            <div class="kartu-nama">Matcha Holic</div>
+            <div class="kartu-desc">Matcha premium Uji Jepang dengan susu segar dan whipped cream lembut</div>
+            <div class="kartu-footer">
+              <div class="kartu-harga">Rp 35.000</div>
+              <button class="kartu-tambah" onclick="tambahKeranjang(this)" aria-label="Tambah">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======= KARTU MENU 4 ======= -->
+        <div class="menu-kartu" data-kategori="dessert">
+          <div class="kartu-gambar">🥐</div>
+          <div class="kartu-konten">
+            <div class="kartu-nama">Butter Croissant</div>
+            <div class="kartu-desc">Croissant laminasi fresh-baked setiap pagi dengan mentega Prancis asli</div>
+            <div class="kartu-footer">
+              <div class="kartu-harga">Rp 28.000</div>
+              <button class="kartu-tambah" onclick="tambahKeranjang(this)" aria-label="Tambah">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======= KARTU MENU 5 ======= -->
+        <div class="menu-kartu" data-kategori="spesial">
+          <div class="kartu-gambar">✨</div>
+          <span class="kartu-badge">Spesial</span>
+          <div class="kartu-konten">
+            <div class="kartu-nama">Kopi Rempah Nusantara</div>
+            <div class="kartu-desc">Racikan khas dengan kayu manis, cengkeh, dan kapulaga pilihan dari kepulauan</div>
+            <div class="kartu-footer">
+              <div class="kartu-harga">Rp 45.000</div>
+              <button class="kartu-tambah" onclick="tambahKeranjang(this)" aria-label="Tambah">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======= KARTU MENU 6 ======= -->
+        <div class="menu-kartu" data-kategori="dessert">
+          <div class="kartu-gambar">🍰</div>
+          <div class="kartu-konten">
+            <div class="kartu-nama">Lava Cake Cokelat</div>
+            <div class="kartu-desc">Cake hangat dengan isian cokelat cair 72% kakao, disajikan dengan es krim vanilla</div>
+            <div class="kartu-footer">
+              <div class="kartu-harga">Rp 52.000</div>
+              <button class="kartu-tambah" onclick="tambahKeranjang(this)" aria-label="Tambah">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAMBAH KARTU BARU DI BAWAH INI: copy salah satu kartu di atas -->
+
+      </div><!-- akhir menu-grid -->
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION SUASANA / GALERI
+       Ubah emoji dan teks overlay tiap foto
+       Untuk foto asli: ganti background-color dengan background-image: url('foto.jpg')
+  ============================================================ -->
+  <section id="suasana">
+    <div class="container">
+      <div class="reveal" style="margin-bottom: 3rem;">
+        <div class="section-label">Galeri</div>
+        <h2 class="section-judul">Rasakan <em>Suasana</em>nya</h2>
+      </div>
+
+      <!-- Grid Galeri — ubah emoji dan teks overlay setiap foto -->
+      <div class="suasana-grid">
+        <!-- Foto 1 (besar, spans 2 baris) -->
+        <div class="suasana-foto" style="background: linear-gradient(135deg,#1a0d03,#3a2010);">
+          <span style="font-size:6rem;">🏡</span><!-- Ubah emoji -->
+          <div class="suasana-foto-overlay">Ruang Utama yang Nyaman</div><!-- Ubah teks -->
+        </div>
+        <!-- Foto 2 -->
+        <div class="suasana-foto" style="background: linear-gradient(135deg,#0d1a10,#1a3520);">
+          <span style="font-size:4rem;">🌿</span>
+          <div class="suasana-foto-overlay">Sudut Hijau</div>
+        </div>
+        <!-- Foto 3 -->
+        <div class="suasana-foto" style="background: linear-gradient(135deg,#1a1008,#352010);">
+          <span style="font-size:4rem;">📚</span>
+          <div class="suasana-foto-overlay">Area Baca & Kerja</div>
+        </div>
+        <!-- Foto 4 -->
+        <div class="suasana-foto" style="background: linear-gradient(135deg,#0a0d1a,#15203a);">
+          <span style="font-size:4rem;">🌙</span>
+          <div class="suasana-foto-overlay">Malam yang Hangat</div>
+        </div>
+        <!-- Foto 5 -->
+        <div class="suasana-foto" style="background: linear-gradient(135deg,#1a0808,#3a1010);">
+          <span style="font-size:4rem;">🎵</span>
+          <div class="suasana-foto-overlay">Live Musik Weekend</div>
+        </div>
+        <!-- Tambah foto baru: duplikat salah satu <div class="suasana-foto"> di atas -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION TESTIMONI
+       Ubah teks ulasan, nama, peran, dan rating bintang
+  ============================================================ -->
+  <section id="testimoni">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label" style="justify-content:center;">Ulasan Pelanggan</div>
+        <h2 class="section-judul" style="text-align:center;">Apa Kata <em>Mereka</em></h2>
+        <div class="divider"></div>
+      </div>
+
+      <!-- Slider Ulasan — tambah/hapus .testimoni-kartu -->
+      <div class="testimoni-slider" id="slider">
+
+        <!-- ULASAN 1 — Ubah teks, nama, dan peran -->
+        <div class="testimoni-kartu">
+          <div class="testimoni-kutip">"</div>
+          <div class="bintang">★★★★★</div><!-- Ubah jumlah bintang -->
+          <p class="testimoni-teks">
+            TemuRasa benar-benar jadi tempat favorit kerja saya.
+            Kopinya konsisten enak, WiFi kencang, dan staffnya
+            selalu ramah. Nggak mau pindah ke tempat lain!
+            <!-- Ubah teks ulasan -->
+          </p>
+          <div class="testimoni-nama">Anisa Rahmawati</div><!-- Ubah nama -->
+          <div class="testimoni-peran">Content Creator · Pelanggan Tetap</div><!-- Ubah peran -->
+        </div>
+
+        <!-- ULASAN 2 -->
+        <div class="testimoni-kartu">
+          <div class="testimoni-kutip">"</div>
+          <div class="bintang">★★★★★</div>
+          <p class="testimoni-teks">
+            Pernah coba 20+ cafe di kota ini, tapi Signature Latte
+            di sini paling juara. Creamy-nya pas, nggak terlalu
+            manis, dan after taste-nya luar biasa.
+          </p>
+          <div class="testimoni-nama">Budi Santoso</div>
+          <div class="testimoni-peran">Coffee Enthusiast · Pengunjung Baru</div>
+        </div>
+
+        <!-- ULASAN 3 -->
+        <div class="testimoni-kartu">
+          <div class="testimoni-kutip">"</div>
+          <div class="bintang">★★★★☆</div><!-- 4 bintang: ganti ★★★★☆ -->
+          <p class="testimoni-teks">
+            Suasananya sangat estetik dan instagramable. Lava Cake-nya
+            juga maknyus! Cocok banget buat meeting santai atau nge-date.
+            Pasti balik lagi kapan-kapan.
+          </p>
+          <div class="testimoni-nama">Citra Dewi</div>
+          <div class="testimoni-peran">Food Blogger · @citramakan</div>
+        </div>
+
+        <!-- ULASAN 4 -->
+        <div class="testimoni-kartu">
+          <div class="testimoni-kutip">"</div>
+          <div class="bintang">★★★★★</div>
+          <p class="testimoni-teks">
+            Cold Brew Pandan-nya unik banget! Belum pernah nemu
+            rasa kayak gini di tempat lain. TemuRasa emang selalu
+            inovatif dalam menghadirkan menu-menu baru.
+          </p>
+          <div class="testimoni-nama">Dani Prasetyo</div>
+          <div class="testimoni-peran">Mahasiswa · Pelanggan Setia</div>
+        </div>
+
+        <!-- Tambah ulasan baru di sini -->
+
+      </div><!-- akhir slider -->
+
+      <!-- Tombol navigasi slider kiri/kanan -->
+      <div class="slider-kontrol">
+        <button class="slider-btn" id="prevBtn" aria-label="Sebelumnya">←</button>
+        <button class="slider-btn" id="nextBtn" aria-label="Selanjutnya">→</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION LOKASI & JAM OPERASIONAL
+       Ubah alamat, nomor telepon, email, dan jam buka
+  ============================================================ -->
+  <section id="lokasi">
+    <div class="container">
+      <div class="reveal" style="margin-bottom: 3.5rem;">
+        <div class="section-label">Temukan Kami</div>
+        <h2 class="section-judul">Lokasi &amp; <em>Jam Buka</em></h2>
+      </div>
+
+      <div class="lokasi-grid">
+
+        <!-- Kolom kiri: Info + Peta -->
+        <div class="reveal">
+          <!-- Kotak Peta (placeholder) — ganti dengan iframe Google Maps jika perlu -->
+          <div class="peta-box">
+            <div class="peta-pin">📍</div><!-- Ubah emoji pin -->
+            <span>Jl. Kenangan Kita No.17, Jambi</span><!-- Ubah alamat -->
+            <a href="https://maps.google.com" target="_blank" class="btn-primer" style="font-size:0.85rem; padding: 0.6rem 1.4rem; position:relative; z-index:1;">
+              Buka di Google Maps ↗<!-- Ubah link Google Maps dengan koordinat asli -->
+            </a>
+          </div>
+        </div>
+
+        <!-- Kolom kanan: Detail Info & Jam -->
+        <div class="reveal">
+
+          <!-- Info Alamat -->
+          <div class="info-item">
+            <div class="info-ikon">📍</div><!-- Ubah emoji ikon -->
+            <div>
+              <div class="info-judul">Alamat</div>
+              <div class="info-nilai">
+                Jl. KenanganKita No.17, Beringin<br>
+                Jambi 36130<!-- Ubah alamat lengkap -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Info Telepon -->
+          <div class="info-item">
+            <div class="info-ikon">📞</div>
+            <div>
+              <div class="info-judul">Telepon / WhatsApp</div>
+              <div class="info-nilai">
+                +62 812-3456-7890<!-- Ubah nomor telepon -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Info Email -->
+          <div class="info-item">
+            <div class="info-ikon">✉️</div>
+            <div>
+              <div class="info-judul">Email</div>
+              <div class="info-nilai">hello@temurasa.id</div><!-- Ubah email -->
+            </div>
+          </div>
+
+          <!-- Tabel Jam Operasional — ubah hari dan jam sesuai cafe kamu -->
+          <div class="status-buka" style="margin-bottom: 1.5rem;">Buka Sekarang</div>
+
+          <div class="jam-tabel">
+            <!-- Format baris: Hari — Jam Buka -->
+            <div class="jam-baris">
+              <span class="jam-hari">Senin – Jumat</span>
+              <span class="jam-waktu">07.00 – 22.00</span><!-- Ubah jam -->
+            </div>
+            <div class="jam-baris">
+              <span class="jam-hari">Sabtu</span>
+              <span class="jam-waktu">08.00 – 23.00</span>
+            </div>
+            <div class="jam-baris">
+              <span class="jam-hari">Minggu</span>
+              <span class="jam-waktu">09.00 – 21.00</span>
+            </div>
+            <div class="jam-baris" style="border-bottom: none;">
+              <span class="jam-hari">Hari Libur Nasional</span>
+              <span class="jam-waktu">10.00 – 20.00</span>
+            </div>
+          </div>
+
+        </div><!-- akhir kolom kanan -->
+      </div><!-- akhir lokasi-grid -->
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION NEWSLETTER
+       Ubah judul dan teks deskripsi
+  ============================================================ -->
+  <section id="newsletter">
+    <div class="newsletter-konten reveal">
+      <div class="section-label" style="justify-content:center;">Tetap Terhubung</div>
+      <h2 class="section-judul" style="text-align:center;">
+        Dapatkan <em>Promo</em><br>Spesial Untukmu
+        <!-- Ubah judul newsletter -->
+      </h2>
+      <p style="color: var(--warna-teks-redup); margin-top:1rem;">
+        Daftarkan emailmu dan dapatkan diskon 15% untuk kunjungan pertama!
+        <!-- Ubah teks deskripsi newsletter -->
+      </p>
+      <div class="newsletter-form">
+        <input
+          type="email"
+          class="newsletter-input"
+          placeholder="nama@email.com"
+          id="emailInput"
+          aria-label="Email kamu"
+        /><!-- Ubah placeholder teks input -->
+        <button class="btn-primer" onclick="daftarNewsletter()">
+          Daftar Gratis
+          <!-- Ubah teks tombol -->
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+       Ubah nama cafe, deskripsi, link, dan media sosial
+  ============================================================ -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+
+        <!-- Kolom 1: Brand & Deskripsi -->
+        <div>
+          <a href="#hero" class="logo" style="font-size:1.6rem;">Temu<span>Rasa</span></a>
+          <p class="footer-brand-desc">
+            Merayakan keindahan kopi Indonesia dalam setiap cangkir.
+            Kami hadir untuk menjadi bagian terbaik dari harimu.
+            <!-- Ubah deskripsi brand -->
+          </p>
+          <!-- Ikon Media Sosial — ubah href dan emoji sesuai platform -->
+          <div class="footer-sosmed">
+            <a href="#" class="sosmed-btn" aria-label="Instagram">📷</a><!-- Instagram -->
+            <a href="#" class="sosmed-btn" aria-label="TikTok">🎵</a><!-- TikTok -->
+            <a href="#" class="sosmed-btn" aria-label="WhatsApp">💬</a><!-- WhatsApp -->
+            <a href="#" class="sosmed-btn" aria-label="Facebook">👥</a><!-- Facebook -->
+          </div>
+        </div>
+
+        <!-- Kolom 2: Menu Link -->
+        <div>
+          <div class="footer-judul-kolom">Navigasi</div><!-- Ubah judul kolom -->
+          <ul class="footer-link-list">
+            <li><a href="#tentang">Tentang Kami</a></li>
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#suasana">Galeri</a></li>
+            <li><a href="#testimoni">Ulasan</a></li>
+            <li><a href="#lokasi">Lokasi</a></li>
+          </ul>
+        </div>
+
+        <!-- Kolom 3: Layanan -->
+        <div>
+          <div class="footer-judul-kolom">Layanan</div>
+          <ul class="footer-link-list">
+            <!-- Ubah/tambah link layanan sesuai cafe kamu -->
+            <li><a href="#">Dine In</a></li>
+            <li><a href="#">Take Away</a></li>
+            <li><a href="#">Delivery</a></li>
+            <li><a href="#">Private Event</a></li>
+            <li><a href="#">Catering</a></li>
+          </ul>
+        </div>
+
+        <!-- Kolom 4: Kontak Singkat -->
+        <div>
+          <div class="footer-judul-kolom">Kontak</div>
+          <ul class="footer-link-list">
+            <li><a href="tel:+6281234567890">+62 812-3456-7890</a></li><!-- Ubah telepon -->
+            <li><a href="mailto:hello@temurasa.id">hello@temurasa.id</a></li><!-- Ubah email -->
+            <li><a href="#">Jl. KenanganKita no.17</a></li><!-- Ubah alamat -->
+            <li><a href="#">Jambi, 36130</a></li>
+          </ul>
+        </div>
+
+      </div><!-- akhir footer-grid -->
+
+      <!-- Footer bawah: copyright -->
+      <div class="footer-bottom">
+        <div class="footer-copyright">
+          © 2025 TemuRasa. Dibuat dengan ☕ dan cinta di Jambi.
+          <!-- Ubah tahun dan nama cafe -->
+        </div>
+        <div class="footer-copyright">
+          <a href="#" style="color: var(--warna-teks-redup); text-decoration:none; margin-right:1.5rem;">Kebijakan Privasi</a>
+          <a href="#" style="color: var(--warna-teks-redup); text-decoration:none;">Syarat &amp; Ketentuan</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       JAVASCRIPT — INTERAKTIVITAS
+       Semua kode JS ada di sini, terpisah dari HTML & CSS
+  ============================================================ -->
+  <script>
+
+    // ============================================================
+    // CUSTOM CURSOR — Titik dan lingkaran ikuti mouse
+    // Hapus seluruh blok ini jika tidak mau custom cursor
+    // ============================================================
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+
+    document.addEventListener('mousemove', (e) => {
+      dot.style.left  = e.clientX + 'px';
+      dot.style.top   = e.clientY + 'px';
+      // Ring sedikit delay agar lebih halus (gunakan setTimeout untuk variasi)
+      setTimeout(() => {
+        ring.style.left = e.clientX + 'px';
+        ring.style.top  = e.clientY + 'px';
+      }, 60); // Ubah angka ini: makin besar = makin lambat ring mengikuti
+    });
+
+    // Ring membesar saat hover elemen interaktif
+    document.querySelectorAll('a, button, .menu-kartu, .filter-btn').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        ring.style.width  = '56px'; // Ubah ukuran ring saat hover
+        ring.style.height = '56px';
+        ring.style.opacity = '0.4';
+      });
+      el.addEventListener('mouseleave', () => {
+        ring.style.width  = '36px'; // Kembali ke ukuran normal
+        ring.style.height = '36px';
+        ring.style.opacity = '0.6';
+      });
+    });
+
+    // ============================================================
+    // NAVBAR — Tambah class saat di-scroll
+    // ============================================================
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      // Ubah angka 50 untuk threshold: kapan navbar berubah warna
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+      // Tombol scroll-to-top muncul setelah scroll 400px
+      scrollTopBtn.classList.toggle('tampil', window.scrollY > 400);
+    });
+
+    // ============================================================
+    // HAMBURGER MENU — Toggle menu mobile
+    // ============================================================
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('navLinks');
+
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('buka');
+    });
+
+    // Tutup menu saat klik link
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => navLinks.classList.remove('buka'));
+    });
+
+    // ============================================================
+    // SCROLL TO TOP BUTTON
+    // ============================================================
+    const scrollTopBtn = document.getElementById('scroll-top');
+
+    // ============================================================
+    // FILTER MENU — Tampilkan/sembunyikan kartu berdasarkan kategori
+    // ============================================================
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Update tombol aktif
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('aktif'));
+        btn.classList.add('aktif');
+
+        const kategori = btn.dataset.kategori;
+
+        document.querySelectorAll('.menu-kartu').forEach(kartu => {
+          // Tampilkan semua jika "semua", atau cocokan kategori
+          const cocok = kategori === 'semua' || kartu.dataset.kategori === kategori;
+          kartu.style.display = cocok ? 'block' : 'none';
+          // Animasi muncul
+          if (cocok) {
+            kartu.style.animation = 'fadeUp 0.4s ease forwards';
+          }
+        });
+      });
+    });
+
+    // ============================================================
+    // TOAST NOTIFIKASI — Muncul saat klik "+" pada kartu menu
+    // ============================================================
+    const toast = document.getElementById('toast');
+    let toastTimer;
+
+    function tambahKeranjang(btn) {
+      // Animasi tombol
+      btn.style.transform = 'rotate(135deg) scale(1.3)';
+      setTimeout(() => { btn.style.transform = ''; }, 400);
+
+      // Tampilkan toast
+      clearTimeout(toastTimer);
+      toast.classList.add('tampil');
+      // Ubah angka di sini (3000 = 3 detik) untuk durasi toast
+      toastTimer = setTimeout(() => toast.classList.remove('tampil'), 3000);
+    }
+
+    // ============================================================
+    // COUNTER ANIMASI — Angka naik otomatis di section Hero
+    // Ubah nilai target sesuai data nyata cafe kamu
+    // ============================================================
+    function animasiCounter(id, target, suffix = '+') {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let current = 0;
+      // Ubah angka di bawah untuk kecepatan: lebih kecil = lebih cepat
+      const step = Math.ceil(target / 60);
+      const interval = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = current + suffix;
+        if (current >= target) clearInterval(interval);
+      }, 30); // Ubah 30ms untuk kecepatan animasi counter
+    }
+
+    // Jalankan counter saat halaman pertama kali dimuat
+    // Ubah angka target sesuai data cafe kamu
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        animasiCounter('stat1', 8, );    // Target: 50+ menu
+        animasiCounter('stat2', 1500, '+');  // Target: 2000+ pelanggan
+        animasiCounter('stat3', 6, ' Thn'); // Target: 6 tahun
+      }, 1000); // Delay 1 detik sebelum counter mulai
+    });
+
+    // ============================================================
+    // REVEAL ON SCROLL — Elemen muncul saat di-scroll ke
+    // ============================================================
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer  = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // Hapus baris di bawah jika ingin animasi berulang tiap kali scroll
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.15, // Ubah: 0.15 = muncul saat 15% elemen terlihat
+      rootMargin: '0px 0px -60px 0px' // Ubah jarak trigger dari bawah viewport
+    });
+
+    revealEls.forEach(el => observer.observe(el));
+
+    // ============================================================
+    // SLIDER TESTIMONI — Geser kartu ulasan kiri/kanan
+    // ============================================================
+    const slider  = document.getElementById('slider');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    // Lebar 1 kartu + gap (sesuaikan jika ubah lebar .testimoni-kartu atau gap)
+    const lebarKartu = 340 + 32; // 340px lebar + 32px gap
+
+    nextBtn.addEventListener('click', () => {
+      slider.scrollBy({ left: lebarKartu, behavior: 'smooth' });
+    });
+    prevBtn.addEventListener('click', () => {
+      slider.scrollBy({ left: -lebarKartu, behavior: 'smooth' });
+    });
+
+    // ============================================================
+    // NEWSLETTER — Validasi dan konfirmasi pendaftaran email
+    // ============================================================
+    function daftarNewsletter() {
+      const input = document.getElementById('emailInput');
+      const email = input.value.trim();
+
+      // Validasi format email sederhana
+      if (!email || !email.includes('@')) {
+        input.style.borderColor = '#ef4444'; // Merah jika tidak valid
+        input.placeholder = 'Masukkan email yang valid!';
+        setTimeout(() => {
+          input.style.borderColor = '';
+          input.placeholder = 'nama@email.com';
+        }, 2000);
+        return;
+      }
+
+      // Sukses — tampilkan toast konfirmasi
+      input.value = '';
+      toast.textContent = '🎉 Yeay! Kode promo dikirim ke emailmu!';
+      toast.classList.add('tampil');
+      setTimeout(() => {
+        toast.classList.remove('tampil');
+        toast.textContent = '☕ Ditambahkan ke keranjang!'; // Reset teks toast
+      }, 4000);
+    }
+
+    // Kirim newsletter dengan tekan Enter
+    document.getElementById('emailInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') daftarNewsletter();
+    });
+
+    // ============================================================
+    // SMOOTH HOVER PARALLAX pada Hero Circle
+    // Ubah angka 15 untuk intensitas gerakan (lebih besar = lebih banyak gerak)
+    // ============================================================
+    document.addEventListener('mousemove', (e) => {
+      const circle = document.querySelector('.hero-circle');
+      if (!circle) return;
+      const x = (e.clientX / window.innerWidth  - 0.5) * 15; // Ubah 15
+      const y = (e.clientY / window.innerHeight - 0.5) * 10; // Ubah 10
+      circle.style.transform = `translateY(calc(-50% + ${y}px)) translateX(${x}px)`;
+    });
+
+  </script>
+
+</body>
+</html>
