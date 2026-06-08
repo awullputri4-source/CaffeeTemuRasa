@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Keranjang — Temu Rasa Cafe</title>
+
+  <!-- ============================================================
+       FONT — GOOGLE FONTS
+       Sama dengan index.html agar konsisten.
+       Ubah font di sini jika ingin menggantinya.
+  ============================================================ -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <!-- Link ke stylesheet utama (style.css) yang sama dengan index.html -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ============================================================
+       STYLE KHUSUS HALAMAN KERANJANG
+       Tambahkan atau ubah style di sini tanpa mengganggu style.css utama
+    ============================================================ */
+
+    /* Wrapper halaman keranjang */
+    .keranjang-page {
+      min-height: 100vh;
+      padding: 8rem clamp(1rem, 5vw, 6rem) 4rem; /* Atas 8rem agar tidak ketutup navbar */
+      background: var(--warna-latar3);
+    }
+
+    /* Judul halaman */
+    .keranjang-judul {
+      font-family: var(--font-judul);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: var(--warna-teks-utama);
+      margin-bottom: 0.5rem;
+    }
+    .keranjang-judul em {
+      color: var(--warna-aksen);
+      font-style: italic;
+    }
+
+    /* Layout dua kolom: daftar item (kiri) + ringkasan harga (kanan) */
+    .keranjang-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;  /* Ubah 340px untuk lebar kolom ringkasan */
+      gap: 2rem;
+      margin-top: 3rem;
+      align-items: start;
+    }
+    /* Responsif: satu kolom di layar kecil */
+    @media (max-width: 900px) {
+      .keranjang-layout { grid-template-columns: 1fr; }
+    }
+
+    /* ---- DAFTAR ITEM ---- */
+    .keranjang-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Satu baris item keranjang */
+    .keranjang-item {
+      background: var(--warna-kartu);
+      border: 1px solid var(--warna-garis);
+      border-radius: var(--radius-kartu);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      transition: border-color var(--durasi-transisi);
+    }
+    .keranjang-item:hover { border-color: var(--warna-aksen); }
+
+    /* Emoji / gambar item */
+    .item-emoji {
+      font-size: 2.5rem;               /* Ubah ukuran emoji */
+      min-width: 3rem;
+      text-align: center;
+    }
+
+    /* Info nama dan harga */
+    .item-info { flex: 1; }
+    .item-nama {
+      font-family: var(--font-judul);
+      font-size: 1.2rem;
+      color: var(--warna-teks-utama);
+    }
+    .item-harga-satuan {
+      font-size: 0.82rem;
+      color: var(--warna-teks-redup);
+      margin-top: 0.2rem;
+    }
+
+    /* Kontrol jumlah (+/-) */
+    .item-qty-kontrol {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--warna-garis);
+      border-radius: 50px;
+      padding: 0.3rem 0.6rem;
+    }
+    /* Tombol kurang dan tambah di dalam kontrol qty */
+    .qty-btn {
+      background: none;
+      border: none;
+      color: var(--warna-aksen);
+      font-size: 1.2rem;
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background var(--durasi-transisi);
+    }
+    .qty-btn:hover { background: rgba(200,146,58,0.15); }
+    .qty-angka {
+      color: var(--warna-teks-utama);
+      font-weight: 500;
+      min-width: 1.5rem;
+      text-align: center;
+    }
+
+    /* Harga subtotal item (qty × harga satuan) */
+    .item-subtotal {
+      font-family: var(--font-judul);
+      font-size: 1.15rem;
+      color: var(--warna-aksen);
+      min-width: 100px;               /* Ubah lebar min agar tidak bergeser */
+      text-align: right;
+    }
+
+    /* Tombol hapus item */
+    .item-hapus {
+      background: none;
+      border: none;
+      color: rgba(255,100,80,0.5);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.3rem;
+      border-radius: 50%;
+      transition: color var(--durasi-transisi), background var(--durasi-transisi);
+    }
+    .item-hapus:hover { color: #ff4444; background: rgba(255,68,68,0.1); }
+
+    /* ---- KONDISI KERANJANG KOSONG ---- */
+    .keranjang-kosong {
+      text-align: center;
+      padding: 5rem 2rem;
+      color: var(--warna-teks-redup);
+      display: none; /* Disembunyikan secara default, ditampilkan oleh JS */
+    }
+    .keranjang-kosong .kosong-ikon { font-size: 5rem; margin-bottom: 1rem; }
+    .keranjang-kosong p { font-size: 1.1rem; margin-bottom: 1.5rem; }
+
+    /* ---- KARTU RINGKASAN PESANAN (kanan) ---- */
+    .ringkasan-kartu {
+      background: var(--warna-kartu);
+      border: 1px solid var(--warna-garis);
+      border-radius: var(--radius-kartu);
+      padding: 2rem;
+      position: sticky;               /* Menempel saat di-scroll */
+      top: 6rem;                      /* Sesuaikan dengan tinggi navbar */
+    }
+
+    .ringkasan-judul {
+      font-family: var(--font-judul);
+      font-size: 1.5rem;
+      color: var(--warna-teks-utama);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Baris total */
+    .ringkasan-baris {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--warna-garis);
+      font-size: 0.9rem;
+      color: var(--warna-teks-redup);
+    }
+    .ringkasan-baris:last-of-type { border-bottom: none; }
+    .ringkasan-baris.total {
+      font-family: var(--font-judul);
+      font-size: 1.4rem;
+      color: var(--warna-aksen);
+      font-weight: 600;
+      padding-top: 1rem;
+    }
+
+    /* Tombol lanjut ke checkout */
+    .btn-checkout {
+      display: block;
+      width: 100%;
+      margin-top: 1.5rem;
+      background: var(--warna-aksen);
+      color: var(--warna-tombol-teks);
+      border: none;
+      border-radius: var(--radius-tombol);
+      padding: 1rem 1.5rem;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: background var(--durasi-transisi), transform var(--durasi-transisi);
+      letter-spacing: 0.05em;
+    }
+    .btn-checkout:hover { background: var(--warna-aksen2); transform: scale(1.02); }
+
+    /* Link kembali ke menu */
+    .link-kembali {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--warna-teks-redup);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      transition: color var(--durasi-transisi);
+    }
+    .link-kembali:hover { color: var(--warna-aksen); }
+
+    /* Divider tipis */
+    .divider-tipis {
+      height: 1px;
+      background: var(--warna-garis);
+      margin: 0.5rem 0;
+    }
+
+    /* Promo code input (opsional, belum fungsional) */
+    .promo-form {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .promo-input {
+      flex: 1;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--warna-garis);
+      border-radius: var(--radius-tombol);
+      color: var(--warna-teks-utama);
+      padding: 0.6rem 1rem;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color var(--durasi-transisi);
+    }
+    .promo-input:focus { border-color: var(--warna-aksen); }
+    .promo-input::placeholder { color: var(--warna-teks-redup); }
+    .btn-promo {
+      background: transparent;
+      border: 1px solid var(--warna-aksen);
+      color: var(--warna-aksen);
+      border-radius: var(--radius-tombol);
+      padding: 0.6rem 1rem;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: background var(--durasi-transisi), color var(--durasi-transisi);
+    }
+    .btn-promo:hover { background: var(--warna-aksen); color: var(--warna-tombol-teks); }
+
+    /* Label diskon (muncul jika promo valid) */
+    .label-diskon {
+      color: #4caf50;
+      font-size: 0.8rem;
+      margin-top: 0.4rem;
+      display: none; /* ditampilkan oleh JS saat promo valid */
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================
+       CUSTOM CURSOR (sama dengan index.html)
+       Hapus dua div ini jika tidak mau custom cursor
+  ============================================================ -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ============================================================
+       TOAST NOTIFIKASI
+  ============================================================ -->
+  <div id="toast">✅ Item dihapus dari keranjang</div>
+
+  <!-- ============================================================
+       TOMBOL SCROLL KE ATAS
+  ============================================================ -->
+  <button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+  <!-- ============================================================
+       NAVBAR — sama dengan index.html
+       Link "Keranjang" ditandai aktif secara otomatis oleh JS
+  ============================================================ -->
+  <nav id="navbar">
+    <!-- Logo — klik kembali ke halaman utama -->
+    <a href="index.html" class="logo">Temu<span>Rasa</span></a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#tentang">Tentang</a></li>
+      <li><a href="index.html#menu">Menu</a></li>
+      <li><a href="index.html#suasana">Suasana</a></li>
+      <li><a href="index.html#testimoni">Ulasan</a></li>
+      <li><a href="index.html#lokasi">Lokasi</a></li>
+      <li><a href="index.html#menu" class="nav-cta">Pesan Sekarang</a></li>
+      <!-- Ikon keranjang dengan badge -->
+      <li>
+        <a href="keranjang.html" class="nav-keranjang" aria-label="Keranjang belanja">
+          🛒 <span class="keranjang-badge" id="keranjangBadge">0</span>
+        </a>
+      </li>
+    </ul>
+
+    <button class="hamburger" id="hamburger" aria-label="Buka menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ============================================================
+       HALAMAN UTAMA KERANJANG
+  ============================================================ -->
+  <main class="keranjang-page">
+    <div class="container">
+
+      <!-- Link kembali ke menu -->
+      <a href="index.html#menu" class="link-kembali">← Kembali ke Menu</a>
+
+      <!-- Banner foto cafe -->
+      <div style="
+        width: 100%;
+        height: 200px;
+        border-radius: 1.2rem;
+        overflow: hidden;
+        margin-bottom: 2rem;
+        position: relative;
+        border: 1px solid var(--warna-garis);
+      ">
+
+        <div style="
+          position: absolute; inset: 0;
+          display: flex; align-items: center; justify-content: center;
+          flex-direction: column; gap: 0.4rem;
+          background: linear-gradient(to right, rgba(15,11,5,0.7), rgba(15,11,5,0.3));
+        ">
+          <span style="font-family: var(--font-judul); font-size: 1rem; color: var(--warna-aksen); letter-spacing: 0.2em; text-transform: uppercase;">TemuRasa Cafe</span>
+          <span style="font-family: var(--font-judul); font-size: 2rem; color: var(--warna-teks-utama); font-style: italic;">Keranjang Pesananmu</span>
+        </div>
+      </div>
+
+      <!-- Judul halaman -->
+      <h1 class="keranjang-judul">Keranjang <em>Pesananmu</em></h1>
+      <!-- Sub-judul menampilkan jumlah item, diisi oleh JS -->
+      <p id="jumlahItemTeks" style="color: var(--warna-teks-redup); font-size:0.9rem; margin-top:0.25rem;"></p>
+
+      <!-- Layout dua kolom -->
+      <div class="keranjang-layout">
+
+        <!-- Kolom Kiri: Daftar Item -->
+        <div>
+          <!-- Pesan jika keranjang kosong -->
+          <div class="keranjang-kosong" id="pesanKosong">
+            <div class="kosong-ikon">
+              <img src="hot_latee.jpeg" alt="Menu TemuRasa" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border: 3px solid var(--warna-aksen); opacity:0.7;"/>
+            </div>
+            <p>Keranjangmu masih kosong.</p>
+            <a href="index.html#menu" class="btn-primer" style="display:inline-flex;">
+              ☕ Pilih Menu Dulu
+            </a>
+          </div>
+
+          <!-- Daftar item dirender oleh JS — jangan hapus div ini -->
+          <div class="keranjang-list" id="keranjangList"></div>
+        </div>
+
+        <!-- Kolom Kanan: Ringkasan Harga -->
+        <div class="ringkasan-kartu" id="ringkasanKartu">
+          <div class="ringkasan-judul">Ringkasan Pesanan</div>
+
+          <!-- Subtotal item — diisi oleh JS -->
+          <div class="ringkasan-baris">
+            <span id="ringkasanItemLabel">0 Item</span>
+            <span id="ringkasanSubtotal">Rp 0</span>
+          </div>
+
+          <!-- Biaya layanan tetap -->
+          <!-- Ubah angka "2.000" dan "biayaLayanan" jika ingin mengubah nilai biaya layanan -->
+          <div class="ringkasan-baris">
+            <span>Biaya Layanan</span>
+            <span id="biayaLayananTeks">Rp 2.000</span>
+          </div>
+
+          <!-- Diskon promo (tersembunyi secara default) -->
+          <div class="ringkasan-baris" id="barisDiskon" style="display:none; color: #4caf50;">
+            <span>🎉 Diskon Promo</span>
+            <span id="nilaiDiskon">- Rp 0</span>
+          </div>
+
+          <div class="divider-tipis"></div>
+
+          <!-- Total Akhir -->
+          <div class="ringkasan-baris total">
+            <span>Total</span>
+            <span id="totalAkhir">Rp 0</span>
+          </div>
+
+          <!-- Form Kode Promo -->
+          <!-- Tambahkan kode promo valid di array KODE_PROMO di JS -->
+          <div class="promo-form">
+            <input
+              type="text"
+              class="promo-input"
+              id="promoInput"
+              placeholder="Kode promo (TEMURASA15)"
+            />
+            <button class="btn-promo" onclick="terapkanPromo()">Pakai</button>
+          </div>
+          <p class="label-diskon" id="labelDiskon">✅ Promo berhasil diterapkan!</p>
+
+          <!-- Tombol lanjut ke checkout — href ke checkout.html -->
+          <a href="checkout.html" class="btn-checkout" id="btnCheckout">
+            Lanjut ke Checkout →
+          </a>
+
+          <!-- Tombol hapus semua item -->
+          <button
+            onclick="hapusSemua()"
+            style="width:100%; margin-top:0.75rem; background:none; border:1px solid rgba(255,80,80,0.3);
+                   color: rgba(255,100,80,0.7); border-radius:var(--radius-tombol); padding:0.6rem;
+                   font-family:var(--font-body); cursor:pointer; font-size:0.85rem;
+                   transition: all 0.3s;"
+            onmouseover="this.style.borderColor='#ff4444'; this.style.color='#ff4444';"
+            onmouseout="this.style.borderColor='rgba(255,80,80,0.3)'; this.style.color='rgba(255,100,80,0.7)';">
+            🗑️ Hapus Semua
+          </button>
+        </div>
+
+      </div><!-- akhir keranjang-layout -->
+    </div>
+  </main>
+
+  <!-- ============================================================
+       FOOTER MINI — versi ringkas dari footer index.html
+  ============================================================ -->
+  <footer style="padding: 2rem clamp(1rem,5vw,6rem); border-top: 1px solid var(--warna-garis); text-align:center;">
+    <p style="color: var(--warna-teks-redup); font-size:0.82rem;">
+      © 2025 TemuRasa. Dibuat dengan ☕ dan cinta.
+      <!-- Ubah tahun dan nama cafe -->
+    </p>
+  </footer>
+
+  <!-- ============================================================
+       JAVASCRIPT — LOGIKA HALAMAN KERANJANG
+  ============================================================ -->
+  <script>
+
+    // ============================================================
+    // CUSTOM CURSOR — Sama dengan index.html
+    // Hapus blok ini jika tidak mau custom cursor
+    // ============================================================
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    document.addEventListener('mousemove', (e) => {
+      dot.style.left  = e.clientX + 'px';
+      dot.style.top   = e.clientY + 'px';
+      setTimeout(() => {
+        ring.style.left = e.clientX + 'px';
+        ring.style.top  = e.clientY + 'px';
+      }, 60);
+    });
+
+    // ============================================================
+    // NAVBAR SCROLL & HAMBURGER
+    // ============================================================
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+      document.getElementById('scroll-top').classList.toggle('tampil', window.scrollY > 400);
+    });
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('buka');
+    });
+
+    // ============================================================
+    // TOAST NOTIFIKASI
+    // ============================================================
+    const toast = document.getElementById('toast');
+    let toastTimer;
+
+    function tampilToast(pesan) {
+      // Fungsi reusable untuk menampilkan toast dengan pesan tertentu
+      clearTimeout(toastTimer);
+      toast.textContent = pesan;
+      toast.classList.add('tampil');
+      toastTimer = setTimeout(() => toast.classList.remove('tampil'), 3000);
+    }
+
+    // ============================================================
+    // KONFIGURASI BIAYA DAN PROMO
+    // Ubah nilai di sini tanpa harus mencari di banyak tempat
+    // ============================================================
+    const BIAYA_LAYANAN = 2000; // Biaya layanan dalam rupiah (tanpa titik/koma)
+
+    // Daftar kode promo: { kode, tipe: 'persen'/'nominal', nilai }
+    // Tambahkan kode promo baru di array ini
+    const KODE_PROMO = [
+      { kode: 'TEMURASA15', tipe: 'persen',  nilai: 15 }, // Diskon 15%
+      { kode: 'GRATIS',     tipe: 'nominal', nilai: 10000 }, // Diskon Rp 10.000
+    ];
+
+    let diskonAktif = 0; // Nilai diskon yang sedang aktif (dalam rupiah)
+
+    // ============================================================
+    // FORMAT RUPIAH — Helper mengubah angka menjadi "Rp 38.000"
+    // ============================================================
+    function formatRupiah(angka) {
+      return 'Rp ' + angka.toLocaleString('id-ID'); // Format Indonesia: titik sebagai pemisah ribuan
+    }
+
+    // ============================================================
+    // PARSE HARGA dari string "Rp 38.000" → angka 38000
+    // ============================================================
+    function parseHarga(str) {
+      // Hapus "Rp ", spasi, dan titik, lalu ubah ke integer
+      return parseInt(str.replace(/[Rp\s.]/g, ''), 10) || 0;
+    }
+
+    // ============================================================
+    // HITUNG DAN PERBARUI RINGKASAN HARGA
+    // Dipanggil setiap kali ada perubahan di keranjang
+    // ============================================================
+    function perbaruiRingkasan(keranjang) {
+      // Hitung subtotal semua item
+      const subtotal = keranjang.reduce((acc, item) => {
+        return acc + parseHarga(item.harga) * item.qty;
+      }, 0);
+
+      // Hitung total akhir: subtotal + layanan - diskon
+      const total = subtotal + BIAYA_LAYANAN - diskonAktif;
+
+      // Perbarui teks di DOM
+      const jmlItem = keranjang.reduce((a, i) => a + i.qty, 0);
+      document.getElementById('ringkasanItemLabel').textContent = jmlItem + ' Item';
+      document.getElementById('ringkasanSubtotal').textContent  = formatRupiah(subtotal);
+      document.getElementById('totalAkhir').textContent         = formatRupiah(Math.max(0, total));
+
+      // Sembunyikan baris diskon jika belum ada promo aktif
+      const barisDiskon = document.getElementById('barisDiskon');
+      if (diskonAktif > 0) {
+        barisDiskon.style.display = 'flex';
+        document.getElementById('nilaiDiskon').textContent = '- ' + formatRupiah(diskonAktif);
+      } else {
+        barisDiskon.style.display = 'none';
+      }
+    }
+
+    // ============================================================
+    // RENDER DAFTAR ITEM — Menggambar ulang semua item keranjang
+    // Dipanggil setiap kali data berubah
+    // ============================================================
+    function renderKeranjang() {
+      // Ambil data keranjang terbaru dari localStorage
+      const keranjang = JSON.parse(localStorage.getItem('keranjang_temurasa')) || [];
+      const list       = document.getElementById('keranjangList');
+      const pesanKosong = document.getElementById('pesanKosong');
+      const ringkasanKartu = document.getElementById('ringkasanKartu');
+      const badge      = document.getElementById('keranjangBadge');
+
+      // Bersihkan list sebelum render ulang
+      list.innerHTML = '';
+
+      if (keranjang.length === 0) {
+        // Tampilkan pesan kosong, sembunyikan ringkasan
+        pesanKosong.style.display = 'block';
+        ringkasanKartu.style.display = 'none';
+        document.getElementById('jumlahItemTeks').textContent = 'Keranjangmu masih kosong.';
+        if (badge) badge.style.display = 'none';
+        return;
+      }
+
+      // Ada item: sembunyikan pesan kosong, tampilkan ringkasan
+      pesanKosong.style.display = 'none';
+      ringkasanKartu.style.display = 'block';
+
+      // Hitung total qty untuk teks header
+      const totalQty = keranjang.reduce((a, i) => a + i.qty, 0);
+      document.getElementById('jumlahItemTeks').textContent = totalQty + ' item dalam keranjangmu';
+      if (badge) {
+        badge.textContent = totalQty;
+        badge.style.display = 'inline-flex';
+      }
+
+      // Render setiap item sebagai baris HTML
+      keranjang.forEach((item, index) => {
+        const hargaSatuan = parseHarga(item.harga);
+        const subtotalItem = hargaSatuan * item.qty;
+
+        // Buat elemen baris item
+        const div = document.createElement('div');
+        div.className = 'keranjang-item';
+        div.setAttribute('data-index', index); // Simpan index untuk operasi qty
+
+        // Template HTML satu baris item
+        // Ubah struktur HTML di sini jika ingin mengubah tampilan baris item
+        div.innerHTML = `
+          <!-- Emoji item -->
+          <div class="item-emoji">${item.emoji}</div>
+
+          <!-- Nama dan harga satuan -->
+          <div class="item-info">
+            <div class="item-nama">${item.nama}</div>
+            <div class="item-harga-satuan">${item.harga} / porsi</div>
+          </div>
+
+          <!-- Kontrol qty: tombol kurang, angka, tombol tambah -->
+          <div class="item-qty-kontrol">
+            <button class="qty-btn" onclick="ubahQty(${index}, -1)" aria-label="Kurangi jumlah">−</button>
+            <span class="qty-angka">${item.qty}</span>
+            <button class="qty-btn" onclick="ubahQty(${index}, +1)" aria-label="Tambah jumlah">+</button>
+          </div>
+
+          <!-- Subtotal item (qty × harga) -->
+          <div class="item-subtotal">${formatRupiah(subtotalItem)}</div>
+
+          <!-- Tombol hapus item ini -->
+          <button class="item-hapus" onclick="hapusItem(${index})" aria-label="Hapus ${item.nama}">✕</button>
+        `;
+
+        list.appendChild(div);
+      });
+
+      // Perbarui ringkasan harga setelah render
+      perbaruiRingkasan(keranjang);
+    }
+
+    // ============================================================
+    // UBAH QTY — Tambah atau kurangi jumlah item
+    // index: posisi item di array, delta: +1 atau -1
+    // ============================================================
+    function ubahQty(index, delta) {
+      let keranjang = JSON.parse(localStorage.getItem('keranjang_temurasa')) || [];
+
+      keranjang[index].qty += delta;
+
+      if (keranjang[index].qty <= 0) {
+        // Jika qty menjadi 0 atau negatif, hapus item dari array
+        const namaHapus = keranjang[index].nama;
+        keranjang.splice(index, 1);
+        tampilToast(`🗑️ ${namaHapus} dihapus dari keranjang`);
+      }
+
+      // Simpan dan render ulang
+      localStorage.setItem('keranjang_temurasa', JSON.stringify(keranjang));
+      renderKeranjang();
+    }
+
+    // ============================================================
+    // HAPUS ITEM — Hapus satu item berdasarkan index
+    // ============================================================
+    function hapusItem(index) {
+      let keranjang = JSON.parse(localStorage.getItem('keranjang_temurasa')) || [];
+      const namaHapus = keranjang[index].nama;
+
+      keranjang.splice(index, 1); // Hapus 1 elemen di posisi 'index'
+
+      localStorage.setItem('keranjang_temurasa', JSON.stringify(keranjang));
+      tampilToast(`🗑️ ${namaHapus} dihapus`);
+      renderKeranjang();
+    }
+
+    // ============================================================
+    // HAPUS SEMUA — Kosongkan keranjang
+    // ============================================================
+    function hapusSemua() {
+      if (!confirm('Yakin mau mengosongkan keranjang?')) return; // Konfirmasi dulu
+      localStorage.removeItem('keranjang_temurasa');
+      diskonAktif = 0;
+      tampilToast('🗑️ Keranjang dikosongkan');
+      renderKeranjang();
+    }
+
+    // ============================================================
+    // TERAPKAN PROMO — Validasi dan hitung diskon kode promo
+    // Tambahkan kode baru di array KODE_PROMO di atas
+    // ============================================================
+    function terapkanPromo() {
+      const inputKode  = document.getElementById('promoInput').value.trim().toUpperCase();
+      const labelDiskon = document.getElementById('labelDiskon');
+      const promo      = KODE_PROMO.find(p => p.kode === inputKode); // Cari kode
+
+      if (!promo) {
+        // Kode tidak ditemukan
+        labelDiskon.textContent = '❌ Kode promo tidak valid';
+        labelDiskon.style.color = '#ff4444';
+        labelDiskon.style.display = 'block';
+        return;
+      }
+
+      // Hitung nilai diskon berdasarkan tipe
+      const keranjang = JSON.parse(localStorage.getItem('keranjang_temurasa')) || [];
+      const subtotal  = keranjang.reduce((acc, item) => acc + parseHarga(item.harga) * item.qty, 0);
+
+      if (promo.tipe === 'persen') {
+        diskonAktif = Math.round(subtotal * promo.nilai / 100); // Diskon persentase
+      } else {
+        diskonAktif = promo.nilai; // Diskon nominal tetap
+      }
+
+      // Tampilkan pesan sukses
+      labelDiskon.textContent = `✅ Promo berhasil! Diskon ${promo.tipe === 'persen' ? promo.nilai + '%' : formatRupiah(promo.nilai)}`;
+      labelDiskon.style.color = '#4caf50';
+      labelDiskon.style.display = 'block';
+
+      // Perbarui tampilan ringkasan
+      perbaruiRingkasan(keranjang);
+    }
+
+    // ============================================================
+    // JALANKAN SAAT HALAMAN DIMUAT
+    // ============================================================
+    renderKeranjang();
+
+  </script>
+
+</body>
+</html>

@@ -52,6 +52,12 @@
       <li><a href="#lokasi">Lokasi</a></li>
       <!-- Tombol CTA paling kanan navbar -->
       <li><a href="#menu" class="nav-cta">Pesan Sekarang</a></li>
+      <!-- ikon keranjang — badge angka diperbarui otomatis oleh JS -->
+      <li>
+        <a href="keranjang.html" class="nav-keranjang" id="navKeranjang" aria-label="Keranjang belanja">
+          🛒 <span class="keranjang-badge" id="keranjangBadge">0</span>
+        </a>
+      </li>
     </ul>
 
     <!-- Tombol hamburger untuk mobile -->
@@ -65,7 +71,7 @@
        Ubah label, judul, deskripsi, teks tombol, dan angka statistik
   ============================================================ -->
   <section id="hero">
-    <div class="hero-bg"></div>
+    <div class="hero-bg" style="background: linear-gradient(to right, rgba(15,11,5,0.93) 40%, rgba(15,11,5,0.55) 100%), url('wallpaper.jpeg') center/cover no-repeat !important;"></div>
     <div class="hero-ring"></div>
     <div class="hero-circle"><!-- Lingkaran dekoratif kanan --></div>
 
@@ -124,10 +130,7 @@
 
         <!-- Kolom kiri: Visual / Foto -->
         <div class="tentang-visual reveal">
-          <div class="tentang-foto-utama">
-            <!-- Ganti emoji dengan: background-image: url('foto-cafe.jpg') -->
-            ☕
-          </div>
+          <div class="tentang-foto-utama" style="background: url('1foto.jpeg') center/cover no-repeat;"></div>
           <!-- Badge melayang di pojok kanan bawah foto -->
           <div class="tentang-badge">
             <div class="tentang-badge-angka">4.9</div><!-- Ubah angka rating -->
@@ -209,7 +212,7 @@
              Salin blok ini untuk menambah menu baru
              Ubah: emoji di .kartu-gambar, nama, deskripsi, harga, kategori (data-kategori) -->
         <div class="menu-kartu" data-kategori="kopi">
-          <div class="kartu-gambar">☕</div>
+          <div class="kartu-gambar" style="background: url('hot latee.jpeg') center/cover no-repeat; font-size:0;"></div>
           <span class="kartu-badge">Favorit</span><!-- Hapus baris ini jika tidak ada badge -->
           <div class="kartu-konten">
             <div class="kartu-nama">Signature Latte</div><!-- Ubah nama menu -->
@@ -223,11 +226,11 @@
 
         <!-- ======= KARTU MENU 2 ======= -->
         <div class="menu-kartu" data-kategori="kopi">
-          <div class="kartu-gambar">🥛</div>
+          <div class="kartu-gambar" style="background: url('hot americano.jpeg') center/cover no-repeat; font-size:0;"></div>
           <span class="kartu-badge">Baru</span>
           <div class="kartu-konten">
-            <div class="kartu-nama">Cold Brew Pandan</div>
-            <div class="kartu-desc">Cold brew 18 jam dengan ekstrak pandan segar — perpaduan rasa yang unik</div>
+            <div class="kartu-nama">Hot Americano</div>
+            <div class="kartu-desc">Double shot Espresso dari biji kopi Robusta Pilihan yang dipadukan dengan air murni, menghasilkan aroma yang khas serta rasa yang kuat</div>
             <div class="kartu-footer">
               <div class="kartu-harga">Rp 42.000</div>
               <button class="kartu-tambah" onclick="tambahKeranjang(this)" aria-label="Tambah">+</button>
@@ -237,7 +240,7 @@
 
         <!-- ======= KARTU MENU 3 ======= -->
         <div class="menu-kartu" data-kategori="non-kopi">
-          <div class="kartu-gambar">🍵</div>
+          <div class="kartu-gambar" style="background: url('ice matcha.jpeg') center/cover no-repeat; font-size:0;"></div>
           <div class="kartu-konten">
             <div class="kartu-nama">Matcha Holic</div>
             <div class="kartu-desc">Matcha premium Uji Jepang dengan susu segar dan whipped cream lembut</div>
@@ -250,7 +253,7 @@
 
         <!-- ======= KARTU MENU 4 ======= -->
         <div class="menu-kartu" data-kategori="dessert">
-          <div class="kartu-gambar">🥐</div>
+          <div class="kartu-gambar" style="background: url('croisant.jpeg') center/cover no-repeat; font-size:0;"></div>
           <div class="kartu-konten">
             <div class="kartu-nama">Butter Croissant</div>
             <div class="kartu-desc">Croissant laminasi fresh-baked setiap pagi dengan mentega Prancis asli</div>
@@ -263,11 +266,11 @@
 
         <!-- ======= KARTU MENU 5 ======= -->
         <div class="menu-kartu" data-kategori="spesial">
-          <div class="kartu-gambar">✨</div>
+          <div class="kartu-gambar" style="background: url('chocolate frape.jpeg') center/cover no-repeat; font-size:0;"></div>
           <span class="kartu-badge">Spesial</span>
           <div class="kartu-konten">
-            <div class="kartu-nama">Kopi Rempah Nusantara</div>
-            <div class="kartu-desc">Racikan khas dengan kayu manis, cengkeh, dan kapulaga pilihan dari kepulauan</div>
+            <div class="kartu-nama">Chocolate Frappe</div>
+            <div class="kartu-desc">Perpaduan coklat dan susu yang lembut serta ditambahkan topping whipped Cream </div>
             <div class="kartu-footer">
               <div class="kartu-harga">Rp 45.000</div>
               <button class="kartu-tambah" onclick="tambahKeranjang(this)" aria-label="Tambah">+</button>
@@ -277,7 +280,7 @@
 
         <!-- ======= KARTU MENU 6 ======= -->
         <div class="menu-kartu" data-kategori="dessert">
-          <div class="kartu-gambar">🍰</div>
+          <div class="kartu-gambar" style="background: url('red velvet.jpeg') center/cover no-repeat; font-size:0;"></div>
           <div class="kartu-konten">
             <div class="kartu-nama">Lava Cake Cokelat</div>
             <div class="kartu-desc">Cake hangat dengan isian cokelat cair 72% kakao, disajikan dengan es krim vanilla</div>
@@ -289,6 +292,34 @@
         </div>
 
         <!-- TAMBAH KARTU BARU DI BAWAH INI: copy salah satu kartu di atas -->
+
+        <!-- ======= KARTU MENU 7 ======= -->
+        <div class="menu-kartu" data-kategori="non-kopi">
+          <div class="kartu-gambar" style="background: url('strawberry milkshake.jpeg') center/cover no-repeat; font-size:0;"></div>
+          <span class="kartu-badge">Favorit</span>
+          <div class="kartu-konten">
+            <div class="kartu-nama">Strawberry Milkshake</div>
+            <div class="kartu-desc">Milkshake stroberi segar dengan whipped cream lembut dan potongan buah asli di atasnya</div>
+            <div class="kartu-footer">
+              <div class="kartu-harga">Rp 40.000</div>
+              <button class="kartu-tambah" onclick="tambahKeranjang(this)" aria-label="Tambah">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======= KARTU MENU 8 ======= -->
+        <div class="menu-kartu" data-kategori="dessert">
+          <div class="kartu-gambar" style="background: url('aupel craeumbeul.jpeg') center/cover no-repeat; font-size:0;"></div>
+          <span class="kartu-badge">Baru</span>
+          <div class="kartu-konten">
+            <div class="kartu-nama">Apple Crumble</div>
+            <div class="kartu-desc">Pai apel hangat dengan topping crumble renyah dan krim kocok — paduan sempurna manis & asam</div>
+            <div class="kartu-footer">
+              <div class="kartu-harga">Rp 48.000</div>
+              <button class="kartu-tambah" onclick="tambahKeranjang(this)" aria-label="Tambah">+</button>
+            </div>
+          </div>
+        </div>
 
       </div><!-- akhir menu-grid -->
     </div>
@@ -309,31 +340,25 @@
       <!-- Grid Galeri — ubah emoji dan teks overlay setiap foto -->
       <div class="suasana-grid">
         <!-- Foto 1 (besar, spans 2 baris) -->
-        <div class="suasana-foto" style="background: linear-gradient(135deg,#1a0d03,#3a2010);">
-          <span style="font-size:6rem;">🏡</span><!-- Ubah emoji -->
-          <div class="suasana-foto-overlay">Ruang Utama yang Nyaman</div><!-- Ubah teks -->
+        <div class="suasana-foto" style="background: url('5foto.jpeg') center/cover no-repeat;">
+          <div class="suasana-foto-overlay">Ruang Utama yang Nyaman</div>
         </div>
         <!-- Foto 2 -->
-        <div class="suasana-foto" style="background: linear-gradient(135deg,#0d1a10,#1a3520);">
-          <span style="font-size:4rem;">🌿</span>
+        <div class="suasana-foto" style="background: url('4foto.jpeg') center/cover no-repeat;">
           <div class="suasana-foto-overlay">Sudut Hijau</div>
         </div>
         <!-- Foto 3 -->
-        <div class="suasana-foto" style="background: linear-gradient(135deg,#1a1008,#352010);">
-          <span style="font-size:4rem;">📚</span>
+        <div class="suasana-foto" style="background: url('3foto.jpeg') center/cover no-repeat;">
           <div class="suasana-foto-overlay">Area Baca & Kerja</div>
         </div>
         <!-- Foto 4 -->
-        <div class="suasana-foto" style="background: linear-gradient(135deg,#0a0d1a,#15203a);">
-          <span style="font-size:4rem;">🌙</span>
-          <div class="suasana-foto-overlay">Malam yang Hangat</div>
+        <div class="suasana-foto" style="background: url('1foto.jpeg') center/cover no-repeat;">
+          <div class="suasana-foto-overlay">Eksterior Cafe</div>
         </div>
         <!-- Foto 5 -->
-        <div class="suasana-foto" style="background: linear-gradient(135deg,#1a0808,#3a1010);">
-          <span style="font-size:4rem;">🎵</span>
+        <div class="suasana-foto" style="background: url('6foto.jpeg') center/cover no-repeat;">
           <div class="suasana-foto-overlay">Live Musik Weekend</div>
         </div>
-        <!-- Tambah foto baru: duplikat salah satu <div class="suasana-foto"> di atas -->
       </div>
     </div>
   </section>
@@ -712,17 +737,78 @@
     const toast = document.getElementById('toast');
     let toastTimer;
 
+    // ============================================================
+    // FUNGSI TAMBAH KERANJANG — Menyimpan item ke localStorage
+    // Cara kerja:
+    //   1. Ambil data kartu (nama, harga, emoji) dari DOM
+    //   2. Baca keranjang yang sudah ada dari localStorage
+    //   3. Jika item sudah ada → tambah qty, jika belum → tambah baru
+    //   4. Simpan kembali ke localStorage
+    //   5. Perbarui badge angka di navbar
+    // ============================================================
     function tambahKeranjang(btn) {
-      // Animasi tombol
+      // --- ANIMASI TOMBOL "+" saat diklik ---
       btn.style.transform = 'rotate(135deg) scale(1.3)';
       setTimeout(() => { btn.style.transform = ''; }, 400);
 
-      // Tampilkan toast
+      // --- AMBIL DATA DARI KARTU MENU ---
+      // .closest() mencari elemen induk terdekat dengan class 'menu-kartu'
+      const kartu  = btn.closest('.menu-kartu');
+      const nama   = kartu.querySelector('.kartu-nama').textContent.trim();
+      const harga  = kartu.querySelector('.kartu-harga').textContent.trim();
+      const emoji  = kartu.querySelector('.kartu-gambar').textContent.trim();
+
+      // --- BACA KERANJANG DARI localStorage ---
+      // localStorage.getItem() mengembalikan string JSON atau null
+      // JSON.parse() mengubah string JSON menjadi array JavaScript
+      let keranjang = JSON.parse(localStorage.getItem('keranjang_temurasa')) || [];
+
+      // --- CEK APAKAH ITEM SUDAH ADA (berdasarkan nama) ---
+      const indexAda = keranjang.findIndex(item => item.nama === nama);
+      if (indexAda !== -1) {
+        // Jika ada, tambah qty saja
+        keranjang[indexAda].qty += 1;
+      } else {
+        // Jika belum ada, push item baru
+        keranjang.push({ nama, harga, emoji, qty: 1 });
+      }
+
+      // --- SIMPAN KEMBALI KE localStorage ---
+      localStorage.setItem('keranjang_temurasa', JSON.stringify(keranjang));
+
+      // --- PERBARUI BADGE DI NAVBAR ---
+      perbaruiBadge();
+
+      // --- TAMPILKAN TOAST NOTIFIKASI ---
       clearTimeout(toastTimer);
+      toast.textContent = `☕ ${nama} ditambahkan!`; // Nama item ditampilkan di toast
       toast.classList.add('tampil');
       // Ubah angka di sini (3000 = 3 detik) untuk durasi toast
-      toastTimer = setTimeout(() => toast.classList.remove('tampil'), 3000);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('tampil');
+        toast.textContent = '☕ Ditambahkan ke keranjang!'; // Reset teks toast
+      }, 3000);
     }
+
+    // ============================================================
+    // FUNGSI PERBARUI BADGE KERANJANG DI NAVBAR
+    // Menghitung total qty semua item di keranjang
+    // ============================================================
+    function perbaruiBadge() {
+      const keranjang = JSON.parse(localStorage.getItem('keranjang_temurasa')) || [];
+      // Jumlahkan semua qty: reduce() mengakumulasi nilai
+      const totalItem = keranjang.reduce((acc, item) => acc + item.qty, 0);
+      const badge = document.getElementById('keranjangBadge');
+      if (badge) {
+        badge.textContent = totalItem;
+        // Sembunyikan badge jika kosong, tampilkan jika ada isi
+        badge.style.display = totalItem === 0 ? 'none' : 'inline-flex';
+      }
+    }
+
+    // Jalankan perbaruiBadge saat halaman pertama dimuat
+    // agar badge langsung menampilkan sisa keranjang dari sesi sebelumnya
+    perbaruiBadge();
 
     // ============================================================
     // COUNTER ANIMASI — Angka naik otomatis di section Hero

@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout — Temu Rasa Cafe</title>
+
+  <!-- ============================================================
+       FONT — GOOGLE FONTS (sama dengan halaman lain)
+  ============================================================ -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <!-- Stylesheet utama -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ============================================================
+       STYLE KHUSUS HALAMAN CHECKOUT
+    ============================================================ -->
+
+    /* Wrapper utama halaman checkout */
+    .checkout-page {
+      min-height: 100vh;
+      padding: 8rem clamp(1rem, 5vw, 6rem) 4rem;
+      background: var(--warna-latar3);
+    }
+
+    /* Judul halaman */
+    .checkout-judul {
+      font-family: var(--font-judul);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: var(--warna-teks-utama);
+      margin-bottom: 0.25rem;
+    }
+    .checkout-judul em { color: var(--warna-aksen); font-style: italic; }
+
+    /* ---- STEPPER / INDIKATOR LANGKAH ---- */
+    /* Menunjukkan posisi pengguna dalam alur: Keranjang → Checkout → Konfirmasi */
+    .stepper {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 2rem 0 2.5rem;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    /* Lingkaran angka langkah */
+    .step-angka {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 2px solid var(--warna-garis);
+      color: var(--warna-teks-redup);
+      transition: all 0.3s;
+    }
+    /* Langkah yang sudah selesai */
+    .step.selesai .step-angka {
+      background: rgba(200,146,58,0.2);
+      border-color: var(--warna-aksen);
+      color: var(--warna-aksen);
+    }
+    /* Langkah yang sedang aktif */
+    .step.aktif .step-angka {
+      background: var(--warna-aksen);
+      border-color: var(--warna-aksen);
+      color: var(--warna-tombol-teks);
+    }
+    .step-label {
+      font-size: 0.72rem;
+      color: var(--warna-teks-redup);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .step.aktif .step-label { color: var(--warna-aksen); }
+    /* Garis penghubung antar langkah */
+    .step-garis {
+      flex: 1;
+      height: 1px;
+      background: var(--warna-garis);
+      margin: 0 0.5rem;
+      margin-bottom: 1.4rem; /* Sejajarkan dengan lingkaran */
+    }
+    .step-garis.aktif { background: var(--warna-aksen); opacity: 0.5; }
+
+    /* ---- LAYOUT DUA KOLOM: FORM (kiri) + RINGKASAN (kanan) ---- */
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px; /* Ubah 340px untuk lebar kolom ringkasan */
+      gap: 2rem;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .checkout-layout { grid-template-columns: 1fr; }
+      /* Di mobile, ringkasan muncul di atas form */
+    }
+
+    /* ---- FORM CHECKOUT ---- */
+
+    /* Judul grup field */
+    .form-grup-judul {
+      font-family: var(--font-judul);
+      font-size: 1.3rem;
+      color: var(--warna-teks-utama);
+      margin-bottom: 1.25rem;
+      margin-top: 2rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--warna-garis);
+    }
+    .form-grup-judul:first-child { margin-top: 0; }
+
+    /* Label dan input */
+    .form-baris {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* Dua input per baris */
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    /* Satu input full width */
+    .form-baris.full { grid-template-columns: 1fr; }
+    @media (max-width: 600px) {
+      .form-baris { grid-template-columns: 1fr; } /* Satu kolom di mobile */
+    }
+
+    .form-field { display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .form-label {
+      font-size: 0.8rem;
+      color: var(--warna-teks-redup);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* Input, select, textarea — style sama agar konsisten */
+    .form-input,
+    .form-select,
+    .form-textarea {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--warna-garis);
+      border-radius: 0.6rem;          /* Ubah radius sudut input */
+      color: var(--warna-teks-utama);
+      padding: 0.8rem 1rem;
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color var(--durasi-transisi), background var(--durasi-transisi);
+      width: 100%;
+    }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: var(--warna-aksen);
+      background: rgba(200,146,58,0.04);
+    }
+    /* Placeholder */
+    .form-input::placeholder,
+    .form-textarea::placeholder { color: rgba(168,144,112,0.5); }
+
+    /* Select — opsi background */
+    .form-select { cursor: pointer; }
+    .form-select option { background: #1a1208; color: var(--warna-teks-utama); }
+
+    /* Textarea untuk catatan */
+    .form-textarea { resize: vertical; min-height: 80px; }
+
+    /* Error message di bawah field */
+    .field-error {
+      font-size: 0.75rem;
+      color: #ff6b6b;
+      display: none; /* Ditampilkan oleh JS saat validasi gagal */
+    }
+    .form-input.error, .form-select.error { border-color: #ff6b6b; }
+
+    /* ---- OPSI METODE BAYAR ---- */
+    /* Daftar pilihan metode pembayaran bergaya kartu */
+    .metode-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Satu opsi metode bayar */
+    .metode-kartu {
+      border: 1.5px solid var(--warna-garis);
+      border-radius: 0.75rem;
+      padding: 0.9rem 0.75rem;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color var(--durasi-transisi), background var(--durasi-transisi);
+      position: relative;
+    }
+    .metode-kartu:hover { border-color: var(--warna-aksen); background: rgba(200,146,58,0.04); }
+    /* State terpilih */
+    .metode-kartu.terpilih {
+      border-color: var(--warna-aksen);
+      background: rgba(200,146,58,0.1);
+    }
+    /* Input radio tersembunyi di dalam kartu */
+    .metode-kartu input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .metode-ikon  { font-size: 1.5rem; display: block; margin-bottom: 0.3rem; }
+    .metode-nama  { font-size: 0.78rem; color: var(--warna-teks-redup); }
+
+    /* ---- OPSI TIPE PESANAN ---- */
+    .tipe-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 500px) { .tipe-grid { grid-template-columns: 1fr 1fr; } }
+
+    .tipe-kartu {
+      border: 1.5px solid var(--warna-garis);
+      border-radius: 0.75rem;
+      padding: 1rem 0.5rem;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color var(--durasi-transisi), background var(--durasi-transisi);
+      position: relative;
+    }
+    .tipe-kartu:hover { border-color: var(--warna-aksen); }
+    .tipe-kartu.terpilih {
+      border-color: var(--warna-aksen);
+      background: rgba(200,146,58,0.1);
+    }
+    .tipe-kartu input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+    .tipe-ikon { font-size: 1.6rem; display: block; margin-bottom: 0.4rem; }
+    .tipe-nama { font-size: 0.8rem; color: var(--warna-teks-redup); font-weight: 500; }
+
+    /* Field alamat — muncul/sembunyi tergantung tipe pesanan */
+    #fieldAlamat { display: none; } /* Ditampilkan JS jika delivery dipilih */
+
+    /* ---- TOMBOL SUBMIT ---- */
+    .btn-submit {
+      display: block;
+      width: 100%;
+      margin-top: 2rem;
+      background: var(--warna-aksen);
+      color: var(--warna-tombol-teks);
+      border: none;
+      border-radius: var(--radius-tombol);
+      padding: 1.1rem 1.5rem;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background var(--durasi-transisi), transform var(--durasi-transisi);
+      letter-spacing: 0.05em;
+    }
+    .btn-submit:hover { background: var(--warna-aksen2); transform: scale(1.01); }
+    /* State loading saat proses submit */
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* ---- KARTU RINGKASAN (kanan) ---- */
+    .ringkasan-kartu {
+      background: var(--warna-kartu);
+      border: 1px solid var(--warna-garis);
+      border-radius: var(--radius-kartu);
+      padding: 2rem;
+      position: sticky;
+      top: 6rem;
+    }
+    .ringkasan-judul {
+      font-family: var(--font-judul);
+      font-size: 1.4rem;
+      color: var(--warna-teks-utama);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Baris item di ringkasan */
+    .ringkasan-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--warna-garis);
+      font-size: 0.85rem;
+    }
+    .ringkasan-item:last-of-type { border-bottom: none; }
+    .ri-nama { color: var(--warna-teks-redup); display: flex; align-items: center; gap: 0.4rem; }
+    .ri-qty  { font-size: 0.72rem; background: rgba(200,146,58,0.15); color: var(--warna-aksen); padding: 0.15rem 0.4rem; border-radius: 50px; }
+    .ri-harga { color: var(--warna-teks-utama); }
+
+    .ringkasan-baris {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid var(--warna-garis);
+      font-size: 0.88rem;
+      color: var(--warna-teks-redup);
+    }
+    .ringkasan-baris.total {
+      font-family: var(--font-judul);
+      font-size: 1.35rem;
+      color: var(--warna-aksen);
+      border-bottom: none;
+      padding-top: 0.9rem;
+    }
+
+    /* Tombol kembali ke keranjang */
+    .link-kembali {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--warna-teks-redup);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      transition: color var(--durasi-transisi);
+    }
+    .link-kembali:hover { color: var(--warna-aksen); }
+  </style>
+</head>
+
+<body>
+
+  <!-- Custom cursor -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- Toast notifikasi -->
+  <div id="toast">✅ Pesanan berhasil!</div>
+
+  <!-- Tombol scroll ke atas -->
+  <button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+  <!-- ============================================================
+       NAVBAR
+  ============================================================ -->
+  <nav id="navbar">
+    <a href="index.html" class="logo">Temu<span>Rasa</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#tentang">Tentang</a></li>
+      <li><a href="index.html#menu">Menu</a></li>
+      <li><a href="index.html#suasana">Suasana</a></li>
+      <li><a href="index.html#testimoni">Ulasan</a></li>
+      <li><a href="index.html#lokasi">Lokasi</a></li>
+      <li><a href="index.html#menu" class="nav-cta">Pesan Sekarang</a></li>
+      <li>
+        <a href="keranjang.html" class="nav-keranjang" aria-label="Keranjang">
+          🛒 <span class="keranjang-badge" id="keranjangBadge">0</span>
+        </a>
+      </li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Buka menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ============================================================
+       HALAMAN CHECKOUT
+  ============================================================ -->
+  <main class="checkout-page">
+    <div class="container">
+
+      <!-- Link kembali ke keranjang -->
+      <a href="keranjang.html" class="link-kembali">← Kembali ke Keranjang</a>
+
+      <!-- Banner foto cafe -->
+      <div style="
+        width: 100%;
+        height: 180px;
+        border-radius: 1.2rem;
+        overflow: hidden;
+        margin-bottom: 2rem;
+        position: relative;
+        border: 1px solid var(--warna-garis);
+      ">
+
+        <div style="
+          position: absolute; inset: 0;
+          display: flex; align-items: center; justify-content: center;
+          flex-direction: column; gap: 0.4rem;
+          background: linear-gradient(to right, rgba(15,11,5,0.75), rgba(15,11,5,0.3));
+        ">
+          <span style="font-family: var(--font-judul); font-size: 1rem; color: var(--warna-aksen); letter-spacing: 0.2em; text-transform: uppercase;">TemuRasa Cafe</span>
+          <span style="font-family: var(--font-judul); font-size: 2rem; color: var(--warna-teks-utama); font-style: italic;">Detail Pesanan</span>
+        </div>
+      </div>
+
+      <!-- Judul halaman -->
+      <h1 class="checkout-judul">Detail <em>Pesanan</em></h1>
+      <p style="color:var(--warna-teks-redup); font-size:0.9rem; margin-top:0.25rem;">
+        Lengkapi informasi di bawah untuk menyelesaikan pesananmu
+      </p>
+
+      <!-- ---- STEPPER ---- -->
+      <!-- Ubah class 'aktif' / 'selesai' untuk menunjukkan progres halaman saat ini -->
+      <div class="stepper">
+        <div class="step selesai">
+          <div class="step-angka">✓</div>
+          <div class="step-label">Keranjang</div>
+        </div>
+        <div class="step-garis aktif"></div>
+        <div class="step aktif">
+          <div class="step-angka">2</div>
+          <div class="step-label">Checkout</div>
+        </div>
+        <div class="step-garis"></div>
+        <div class="step">
+          <div class="step-angka">3</div>
+          <div class="step-label">Konfirmasi</div>
+        </div>
+      </div>
+
+      <!-- Layout dua kolom -->
+      <div class="checkout-layout">
+
+        <!-- ============================================================
+             KOLOM KIRI: FORM PEMESANAN
+        ============================================================ -->
+        <div>
+
+          <!-- Grup 1: Tipe Pesanan (Dine In / Take Away / Delivery) -->
+          <div class="form-grup-judul">📋 Tipe Pesanan</div>
+
+          <!-- Kartu pilihan tipe — klik untuk memilih -->
+          <!-- Tambah tipe baru: duplikat .tipe-kartu dan ubah value, ikon, dan nama -->
+          <div class="tipe-grid">
+            <label class="tipe-kartu terpilih" id="tipe-dinein">
+              <input type="radio" name="tipe" value="dinein" checked onchange="pilihTipe(this)"/>
+              <span class="tipe-ikon">🍽️</span>
+              <span class="tipe-nama">Dine In</span>
+            </label>
+            <label class="tipe-kartu" id="tipe-takeaway">
+              <input type="radio" name="tipe" value="takeaway" onchange="pilihTipe(this)"/>
+              <span class="tipe-ikon">🥡</span>
+              <span class="tipe-nama">Take Away</span>
+            </label>
+            <label class="tipe-kartu" id="tipe-delivery">
+              <input type="radio" name="tipe" value="delivery" onchange="pilihTipe(this)"/>
+              <span class="tipe-ikon">🛵</span>
+              <span class="tipe-nama">Delivery</span>
+            </label>
+          </div>
+
+          <!-- Field nomor meja — muncul saat Dine In dipilih -->
+          <div id="fieldMeja" class="form-baris full" style="margin-bottom:1rem;">
+            <div class="form-field">
+              <label class="form-label" for="nomorMeja">Nomor Meja</label>
+              <input type="number" id="nomorMeja" class="form-input" placeholder="Contoh: 5" min="1" max="50"/>
+              <!-- Ubah max sesuai jumlah meja cafe kamu -->
+            </div>
+          </div>
+
+          <!-- Field alamat — muncul saat Delivery dipilih -->
+          <div id="fieldAlamat">
+            <div class="form-baris full">
+              <div class="form-field">
+                <label class="form-label" for="alamatLengkap">Alamat Lengkap *</label>
+                <input type="text" id="alamatLengkap" class="form-input" placeholder="Jalan, RT/RW, Kelurahan"/>
+                <span class="field-error" id="errAlamat">Alamat wajib diisi untuk delivery</span>
+              </div>
+            </div>
+            <div class="form-baris">
+              <div class="form-field">
+                <label class="form-label" for="kota">Kota / Kecamatan</label>
+                <input type="text" id="kota" class="form-input" placeholder="Kota"/>
+              </div>
+              <div class="form-field">
+                <label class="form-label" for="kodePos">Kode Pos</label>
+                <input type="text" id="kodePos" class="form-input" placeholder="12345" maxlength="5"/>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grup 2: Data Pribadi -->
+          <div class="form-grup-judul">👤 Data Pemesan</div>
+
+          <div class="form-baris">
+            <div class="form-field">
+              <label class="form-label" for="namaLengkap">Nama Lengkap *</label>
+              <input type="text" id="namaLengkap" class="form-input" placeholder="Nama kamu"/>
+              <span class="field-error" id="errNama">Nama wajib diisi</span>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="noTelepon">No. WhatsApp *</label>
+              <input type="tel" id="noTelepon" class="form-input" placeholder="+62 812-xxxx-xxxx"/>
+              <span class="field-error" id="errTelepon">Nomor telepon wajib diisi</span>
+            </div>
+          </div>
+
+          <div class="form-baris full">
+            <div class="form-field">
+              <label class="form-label" for="emailPemesan">Email (opsional)</label>
+              <input type="email" id="emailPemesan" class="form-input" placeholder="nama@email.com"/>
+            </div>
+          </div>
+
+          <!-- Grup 3: Catatan Pesanan -->
+          <div class="form-grup-judul">📝 Catatan</div>
+
+          <div class="form-baris full">
+            <div class="form-field">
+              <label class="form-label" for="catatanPesanan">Permintaan Khusus (opsional)</label>
+              <textarea
+                id="catatanPesanan"
+                class="form-textarea"
+                placeholder="Contoh: Less sugar, tambah es, alergi susu, dll."
+                maxlength="300"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Grup 4: Metode Pembayaran -->
+          <div class="form-grup-judul">💳 Metode Pembayaran</div>
+
+          <!-- Kartu pilihan metode bayar -->
+          <!-- Tambah metode baru: duplikat .metode-kartu dan ubah value, ikon, nama -->
+          <div class="metode-grid" id="metodeGrid">
+            <label class="metode-kartu terpilih">
+              <input type="radio" name="metode" value="cash" checked onchange="pilihMetode(this)"/>
+              <span class="metode-ikon">💵</span>
+              <span class="metode-nama">Cash</span>
+            </label>
+            <label class="metode-kartu">
+              <input type="radio" name="metode" value="qris" onchange="pilihMetode(this)"/>
+              <span class="metode-ikon">
+                <img src="qris.jpeg" alt="Qris" style="width: 32px; height: auto; object-fit: contain; vertical-align: middle;">
+              </span>
+              <span class="metode-nama">QRIS</span>
+            </label>
+            <label class="metode-kartu">
+              <input type="radio" name="metode" value="transfer" onchange="pilihMetode(this)"/>
+              <span class="metode-ikon">🏦</span>
+              <span class="metode-nama">Transfer</span>
+            </label>
+            <label class="metode-kartu">
+              <input type="radio" name="metode" value="gopay" onchange="pilihMetode(this)"/>
+              <span class="metode-ikon">
+                <img src="gopay.png" alt="Gopay" style="width: 32px; height: auto; object-fit: contain; vertical-align: middle;">
+              </span>
+              <span class="metode-nama">GoPay</span>
+            </label>
+            <label class="metode-kartu">
+              <input type="radio" name="metode" value="ovo" onchange="pilihMetode(this)"/>
+              <span class="metode-ikon">
+                <img src="ovo.png" alt="Ovo" style="width: 32px; height: auto; object-fit: contain; vertical-align: middle;">
+              </span>
+              <span class="metode-nama">OVO</span>
+            </label>
+            <label class="metode-kartu">
+              <input type="radio" name="metode" value="dana" onchange="pilihMetode(this)"/>
+              <span class="metode-ikon">
+                <img src="dana.png" alt="Dana" style="width: 32px; height: auto; object-fit: contain; vertical-align: middle;">
+              </span>
+              <span class="metode-nama">DANA</span>
+            </label>
+          </div>
+
+          <!-- Tombol submit — memanggil fungsi validasiDanSubmit() -->
+          <button class="btn-submit" id="btnSubmit" onclick="validasiDanSubmit()">
+            Konfirmasi Pesanan ☕
+          </button>
+
+        </div><!-- akhir kolom kiri -->
+
+        <!-- ============================================================
+             KOLOM KANAN: RINGKASAN PESANAN
+        ============================================================ -->
+        <div class="ringkasan-kartu">
+          <div class="ringkasan-judul">Pesananmu</div>
+
+          <!-- Daftar item diisi oleh JS -->
+          <div id="ringkasanItems"></div>
+
+          <!-- Subtotal dan total -->
+          <div class="ringkasan-baris" style="margin-top:0.5rem;">
+            <span>Subtotal</span>
+            <span id="ringkasanSubtotal">Rp 0</span>
+          </div>
+          <div class="ringkasan-baris">
+            <span>Biaya Layanan</span>
+            <span id="biayaLayananTeks">Rp 2.000</span>
+          </div>
+          <!-- Baris diskon (tersembunyi jika tidak ada) -->
+          <div class="ringkasan-baris" id="barisDiskon" style="display:none; color: #4caf50;">
+            <span>Diskon</span>
+            <span id="nilaiDiskon">-</span>
+          </div>
+          <div class="ringkasan-baris total">
+            <span>Total</span>
+            <span id="totalAkhir">Rp 0</span>
+          </div>
+
+          <!-- Info estimasi waktu — ubah teks sesuai kebutuhan -->
+          <div style="margin-top: 1.25rem; padding: 0.9rem; background: rgba(200,146,58,0.07); border-radius:0.75rem; border: 1px dashed rgba(200,146,58,0.25);">
+            <p style="font-size:0.78rem; color: var(--warna-teks-redup); line-height:1.6;">
+              ⏱️ Estimasi siap: <strong style="color:var(--warna-aksen);">15–25 menit</strong><br>
+              <!-- Ubah estimasi waktu sesuai cafe kamu -->
+              📞 Konfirmasi via WhatsApp ke <a href="tel:+6281234567890" style="color:var(--warna-aksen); text-decoration:none;">+62 812-3456-7890</a>
+              <!-- Ubah nomor WA cafe kamu -->
+            </p>
+          </div>
+        </div>
+
+      </div><!-- akhir checkout-layout -->
+    </div>
+  </main>
+
+  <!-- Footer mini -->
+  <footer style="padding: 2rem clamp(1rem,5vw,6rem); border-top: 1px solid var(--warna-garis); text-align:center;">
+    <p style="color: var(--warna-teks-redup); font-size:0.82rem;">
+      © 2025 TemuRasa. Dibuat dengan ☕ dan cinta.
+    </p>
+  </footer>
+
+  <!-- ============================================================
+       JAVASCRIPT — LOGIKA HALAMAN CHECKOUT
+  ============================================================ -->
+  <script>
+
+    // ============================================================
+    // CUSTOM CURSOR
+    // ============================================================
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    document.addEventListener('mousemove', (e) => {
+      dot.style.left = e.clientX + 'px';
+      dot.style.top  = e.clientY + 'px';
+      setTimeout(() => {
+        ring.style.left = e.clientX + 'px';
+        ring.style.top  = e.clientY + 'px';
+      }, 60);
+    });
+
+    // ============================================================
+    // NAVBAR
+    // ============================================================
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+      document.getElementById('scroll-top').classList.toggle('tampil', window.scrollY > 400);
+    });
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('buka');
+    });
+
+    // ============================================================
+    // TOAST
+    // ============================================================
+    const toast = document.getElementById('toast');
+    let toastTimer;
+    function tampilToast(pesan) {
+      clearTimeout(toastTimer);
+      toast.textContent = pesan;
+      toast.classList.add('tampil');
+      toastTimer = setTimeout(() => toast.classList.remove('tampil'), 3000);
+    }
+
+    // ============================================================
+    // KONFIGURASI BIAYA (harus sama dengan keranjang.html)
+    // ============================================================
+    const BIAYA_LAYANAN = 2000; // Biaya layanan dalam rupiah
+
+    // ============================================================
+    // HELPERS FORMAT & PARSE RUPIAH
+    // ============================================================
+    function formatRupiah(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
+    function parseHarga(str) { return parseInt(str.replace(/[Rp\s.]/g, ''), 10) || 0; }
+
+    // ============================================================
+    // PILIH TIPE PESANAN — Update visual kartu dan tampilkan field terkait
+    // ============================================================
+    function pilihTipe(radio) {
+      // Hapus semua class 'terpilih' dulu
+      document.querySelectorAll('.tipe-kartu').forEach(k => k.classList.remove('terpilih'));
+      // Tambah ke kartu yang dipilih
+      radio.closest('.tipe-kartu').classList.add('terpilih');
+
+      const tipe = radio.value;
+      // Tampilkan/sembunyikan field sesuai tipe
+      document.getElementById('fieldAlamat').style.display = tipe === 'delivery' ? 'block' : 'none';
+      document.getElementById('fieldMeja').style.display   = tipe === 'dinein'   ? 'block' : 'none';
+    }
+
+    // ============================================================
+    // PILIH METODE BAYAR — Update visual kartu
+    // ============================================================
+    function pilihMetode(radio) {
+      document.querySelectorAll('.metode-kartu').forEach(k => k.classList.remove('terpilih'));
+      radio.closest('.metode-kartu').classList.add('terpilih');
+    }
+
+    // ============================================================
+    // RENDER RINGKASAN PESANAN dari localStorage
+    // ============================================================
+    function renderRingkasan() {
+      const keranjang = JSON.parse(localStorage.getItem('keranjang_temurasa')) || [];
+
+      // Jika keranjang kosong, redirect ke keranjang.html
+      if (keranjang.length === 0) {
+        window.location.href = 'keranjang.html';
+        return;
+      }
+
+      const container = document.getElementById('ringkasanItems');
+      container.innerHTML = '';
+
+      let subtotal = 0;
+      keranjang.forEach(item => {
+        const hargaSatuan  = parseHarga(item.harga);
+        const subtotalItem = hargaSatuan * item.qty;
+        subtotal += subtotalItem;
+
+        const div = document.createElement('div');
+        div.className = 'ringkasan-item';
+        div.innerHTML = `
+          <span class="ri-nama">
+            ${item.emoji}
+            ${item.nama}
+            <span class="ri-qty">×${item.qty}</span>
+          </span>
+          <span class="ri-harga">${formatRupiah(subtotalItem)}</span>
+        `;
+        container.appendChild(div);
+      });
+
+      // Ambil diskon dari sessionStorage (dikirim dari keranjang.html jika ada)
+      // Untuk kesederhanaan, diskon tidak diteruskan ke checkout di versi ini
+      const diskon = parseInt(sessionStorage.getItem('diskon_temurasa')) || 0;
+
+      document.getElementById('ringkasanSubtotal').textContent = formatRupiah(subtotal);
+      document.getElementById('totalAkhir').textContent = formatRupiah(subtotal + BIAYA_LAYANAN - diskon);
+
+      // Update badge navbar
+      const totalQty = keranjang.reduce((a, i) => a + i.qty, 0);
+      const badge = document.getElementById('keranjangBadge');
+      if (badge) {
+        badge.textContent = totalQty;
+        badge.style.display = totalQty > 0 ? 'inline-flex' : 'none';
+      }
+    }
+
+    // ============================================================
+    // VALIDASI FORM — Cek semua field wajib sebelum submit
+    // Kembalikan true jika valid, false jika ada yang kosong
+    // ============================================================
+    function validasiForm() {
+      let valid = true;
+
+      // Helper: tampilkan error atau sembunyikan
+      function setError(inputId, errId, tampilkan) {
+        const input = document.getElementById(inputId);
+        const err   = document.getElementById(errId);
+        if (tampilkan) {
+          input.classList.add('error');
+          if (err) err.style.display = 'block';
+          valid = false;
+        } else {
+          input.classList.remove('error');
+          if (err) err.style.display = 'none';
+        }
+      }
+
+      // Validasi nama
+      const nama = document.getElementById('namaLengkap').value.trim();
+      setError('namaLengkap', 'errNama', !nama);
+
+      // Validasi telepon
+      const telepon = document.getElementById('noTelepon').value.trim();
+      setError('noTelepon', 'errTelepon', !telepon || telepon.length < 10);
+
+      // Validasi alamat (hanya jika delivery dipilih)
+      const tipe = document.querySelector('input[name="tipe"]:checked')?.value;
+      if (tipe === 'delivery') {
+        const alamat = document.getElementById('alamatLengkap').value.trim();
+        setError('alamatLengkap', 'errAlamat', !alamat);
+      }
+
+      return valid;
+    }
+
+    // ============================================================
+    // VALIDASI DAN SUBMIT — Dijalankan saat klik tombol Konfirmasi
+    // ============================================================
+    function validasiDanSubmit() {
+      if (!validasiForm()) {
+        // Scroll ke error pertama
+        const errEl = document.querySelector('.form-input.error');
+        if (errEl) errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      // ---- KUMPULKAN DATA PESANAN ----
+      const keranjang = JSON.parse(localStorage.getItem('keranjang_temurasa')) || [];
+      const tipe      = document.querySelector('input[name="tipe"]:checked')?.value   || 'dinein';
+      const metode    = document.querySelector('input[name="metode"]:checked')?.value || 'cash';
+
+      const dataPesanan = {
+        // Data item
+        items: keranjang,
+        // Data pemesan
+        nama:       document.getElementById('namaLengkap').value.trim(),
+        telepon:    document.getElementById('noTelepon').value.trim(),
+        email:      document.getElementById('emailPemesan').value.trim(),
+        // Data pesanan
+        tipe:       tipe,
+        nomor_meja: tipe === 'dinein'   ? document.getElementById('nomorMeja').value : null,
+        alamat:     tipe === 'delivery' ? document.getElementById('alamatLengkap').value.trim() : null,
+        kota:       tipe === 'delivery' ? document.getElementById('kota').value.trim() : null,
+        catatan:    document.getElementById('catatanPesanan').value.trim(),
+        // Metode dan pembayaran
+        metode_bayar: metode,
+        // Timestamp pesanan
+        waktu:      new Date().toISOString(),
+        // ID unik pesanan: tanggal + 4 karakter acak
+        order_id:   'TR-' + Date.now().toString(36).toUpperCase().slice(-6),
+      };
+
+      // Simpan data pesanan ke sessionStorage (diambil di halaman konfirmasi)
+      // Gunakan sessionStorage agar data hilang jika browser ditutup
+      sessionStorage.setItem('pesanan_temurasa', JSON.stringify(dataPesanan));
+
+      // ---- SIMULASI LOADING ----
+      const btn = document.getElementById('btnSubmit');
+      btn.disabled = true;
+      btn.textContent = 'Memproses... ⏳';
+
+      // Simulasi delay 1.5 detik (ganti dengan pemanggilan API nyata jika ada)
+      setTimeout(() => {
+        // Kosongkan keranjang setelah berhasil pesan
+        localStorage.removeItem('keranjang_temurasa');
+
+        // Redirect ke halaman konfirmasi
+        window.location.href = 'konfirmasi.html';
+      }, 1500);
+    }
+
+    // ============================================================
+    // JALANKAN SAAT HALAMAN DIMUAT
+    // ============================================================
+    renderRingkasan();
+
+  </script>
+
+</body>
+</html>
